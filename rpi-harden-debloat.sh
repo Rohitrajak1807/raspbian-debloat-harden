@@ -38,7 +38,8 @@ setup_ufw() {
 }
 
 setup_apparmor() {
-    apt-get install apparmor-profiles apparmor-utils -y
+    apt-get install apparmor apparmor-profiles apparmor-utils -y
+    systemctl enable --now apparmor
     aa-enforce /etc/apparmor.d/*
 }
 

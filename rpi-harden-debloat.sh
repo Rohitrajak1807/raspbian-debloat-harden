@@ -15,7 +15,7 @@ remove_packages() {
 }
 
 diasable_services() {
-    local services=(sshd ssh avahi-daemon cups.service)
+    local services=(sshd ssh avahi-daemon cups.service cups)
     for service in "${services[@]}"; do
         systemctl disable --now "${service}"
     done
@@ -28,7 +28,18 @@ remove_from_groups() {
     done
 }
 
+setup_ufw() {
+    apt-get install ufw -y
+    ufw default deny incoming
+    # if SSH is needed enable rate limiting
+    # ufw allow ssh
+    # ufw limit ssh
+}
+
+# TODO add ufw and configure
+
 check_process_privileges
 remove_packages
 diasable_services
+setup_ufw
 remove_from_groups

@@ -58,6 +58,7 @@ fix_sudoers() {
     touch /tmp/sudoers.tmp
     cp /etc/sudoers /tmp/sudoers.tmp
     sed -i "s/ALL\:ALL/ALL/g" /tmp/sudoers.tmp
+    sed -i '/env_reset/ !b; s/$/,timestamp_timeout=0/' /tmp/sudoers.tmp
     visudo -c -f /tmp/sudoers.tmp
     cp /tmp/sudoers.tmp /etc/sudoers
     rm /tmp/sudoers.tmp

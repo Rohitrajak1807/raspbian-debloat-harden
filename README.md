@@ -40,4 +40,4 @@ Simple script to cleanup some unnecessary applications and hardening a stock Ras
 5. Installs ```apparmor apparmor-profiles apparmor-utils``` and enforces all rules in ```/etc/apparmor.d/*```
 6. Blacklists ```usbhid``` module
 7. Fixes sudoers file, changes ```(ALL:ALL)``` to ```(ALL)``` for ```root``` and ```%sudo```
-8. Removes ```$USER``` from ```adm plugdev lpadmin dialout sudo``` groups
+8. Removes ```$USER``` from ```adm gpio i2c lpadmin plugdev spi sudo``` groups

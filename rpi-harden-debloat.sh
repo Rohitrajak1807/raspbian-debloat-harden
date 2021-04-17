@@ -44,7 +44,7 @@ setup_apparmor() {
 }
 
 disable_usbhid_devices() {
-    echo 'blacklist usbhid' > /etc/modprobe.d/usbhid-blacklist.conf
+    echo 'blacklist usbhid' >/etc/modprobe.d/usbhid-blacklist.conf
     update-initramfs -u
 }
 
@@ -60,18 +60,24 @@ fix_sudoers() {
     cp /etc/sudoers "${tmp_sudoer}"
     sed -i "s/ALL\:ALL/ALL/g" "${tmp_sudoer}"
     sed -i '/env_reset/ !b; s/$/,timestamp_timeout=0/' "${tmp_sudoer}"
-    printf '\n%s\tALL=!ALL' "pi" >> "${tmp_sudoer}"
+    printf '\n%s\tALL=!ALL' "${user}" >>"${tmp_sudoer}"
     visudo -c -f "${tmp_sudoer}"
     cp "${tmp_sudoer}" /etc/sudoers
     rm "${tmp_sudoer}"
 }
 
-check_process_privileges
-remove_packages
-disable_services
-update_and_upgrade
-setup_ufw
-setup_apparmor
-disable_usbhid_devices
-fix_sudoers
-remove_from_groups
+main() {
+    # get the logged-in user
+    user="$(logname)"
+    check_process_privileges
+    remove_packages
+    disable_services
+    update_and_upgrade
+    setup_ufw
+    setup_apparmor
+    disable_usbhid_devices
+    fix_sudoers
+    remove_from_groups
+}
+
+main

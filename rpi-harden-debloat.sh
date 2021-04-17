@@ -22,9 +22,9 @@ disable_services() {
 }
 
 remove_from_groups() {
-    local groups=(adm plugdev lpadmin dialout sudo)
+    local groups=(adm gpio i2c lpadmin plugdev spi sudo)
     for group in "${groups[@]}"; do
-        gpasswd -d "${USER}" "${group}"
+        gpasswd -d "$(logname)" "${group}"
     done
 }
 
@@ -55,13 +55,15 @@ update_and_upgrade() {
 }
 
 fix_sudoers() {
-    touch /tmp/sudoers.tmp
-    cp /etc/sudoers /tmp/sudoers.tmp
-    sed -i "s/ALL\:ALL/ALL/g" /tmp/sudoers.tmp
-    sed -i '/env_reset/ !b; s/$/,timestamp_timeout=0/' /tmp/sudoers.tmp
-    visudo -c -f /tmp/sudoers.tmp
-    cp /tmp/sudoers.tmp /etc/sudoers
-    rm /tmp/sudoers.tmp
+    local tmp_sudoer=/tmp/sudoers.tmp
+    touch "${tmp_sudoer}"
+    cp /etc/sudoers "${tmp_sudoer}"
+    sed -i "s/ALL\:ALL/ALL/g" "${tmp_sudoer}"
+    sed -i '/env_reset/ !b; s/$/,timestamp_timeout=0/' "${tmp_sudoer}"
+    printf '\n%s\tALL=!ALL' "pi" >> "${tmp_sudoer}"
+    visudo -c -f "${tmp_sudoer}"
+    cp "${tmp_sudoer}" /etc/sudoers
+    rm "${tmp_sudoer}"
 }
 
 check_process_privileges
